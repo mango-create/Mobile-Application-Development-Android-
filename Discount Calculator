@@ -1,0 +1,77 @@
+/*
+Assignment #2: Discount Calculator
+InClass02
+Matthew Mango
+Raymond Townsend
+ */
+
+package com.example.inclass02;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+import android.widget.TextView;
+import android.util.Log;
+
+import java.text.DecimalFormat;
+
+public class MainActivity extends AppCompatActivity {
+    final DecimalFormat df = new DecimalFormat("0.00");
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //Grabs the values from the XML
+        EditText ticketPrice = findViewById(R.id.enter_ticket_price);
+        RadioGroup radioGroup = findViewById(R.id.radio_percentage);
+        TextView finalValue = findViewById(R.id.final_value);
+
+        //Calculate button
+        findViewById(R.id.calculate_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int checkedId = radioGroup.getCheckedRadioButtonId();
+                double discount = 0;
+                try {
+                    String ticketPriceString = ticketPrice.getText().toString();
+                    double ticketPriceDouble = Double.parseDouble(ticketPriceString);
+
+                    //Grabs value of the radiobutton and sets discount value
+                    if (checkedId == R.id.radioButton_05) {
+                        discount = 0.05;
+                    } else if (checkedId == R.id.radioButton_10) {
+                        discount = 0.10;
+                    } else if (checkedId == R.id.radioButton_15) {
+                        discount = 0.15;
+                    } else if (checkedId == R.id.radioButton_20) {
+                        discount = 0.20;
+                    } else if (checkedId == R.id.radioButton_50) {
+                        discount = 0.50;
+                    }
+                    finalValue.setText("$" + df.format(ticketPriceDouble - (ticketPriceDouble * discount)));
+                }
+                //If you enter anything that isn't a number, including empty string, throws exception.
+                catch (Exception NumberFormatException) {
+                    Toast.makeText(getApplicationContext(), "You must enter a valid positive number",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        //Clear button
+        findViewById(R.id.clear_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText tp = findViewById(R.id.enter_ticket_price);
+                tp.setText("");
+                finalValue.setText("");
+                radioGroup.clearCheck();
+            }
+        });
+    }
+}
